@@ -1,0 +1,446 @@
+:root {
+  --border: #d5d8dc;
+  --border-strong: #b8bcc2;
+  --bg-subtle: #f6f7f8;
+  --text-muted: #5b6169;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: #e8f0fe;
+  --danger: #c0392b;
+  --danger-soft: #fdeceb;
+  --radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  color: #1a1d21;
+}
+
+#root {
+  height: 100%;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-header {
+  padding: 1rem 2rem 0;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.app-header h1 {
+  margin: 0 0 0.75rem;
+  font-size: 1.4rem;
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 2rem 3rem;
+}
+
+section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+h3 {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 1rem 0 0.5rem;
+}
+
+.desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 0.9rem;
+  min-height: 220px;
+}
+
+pre {
+  background: var(--bg-subtle);
+  padding: 0.5rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge.public {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+.badge.hidden {
+  background: #fff3cd;
+  color: #8a6400;
+}
+
+.status-pass {
+  color: #1e7e34;
+  font-weight: 600;
+}
+
+.status-fail,
+.status-error,
+.status-timeout {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.score {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* --- Buttons --- */
+
+.btn {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.05s ease;
+  line-height: 1.2;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+.btn-small {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8rem;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.btn-secondary {
+  background: #fff;
+  border-color: var(--border-strong);
+  color: #1a1d21;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-subtle);
+  border-color: #8a9099;
+}
+
+.btn-danger {
+  background: #fff;
+  border-color: #e2b4ac;
+  color: var(--danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
+
+/* A plain, unstyled button falls back to looking like btn-secondary so
+   nothing in the app reverts to the browser's default button chrome. */
+button:not([class*="btn"]) {
+  appearance: none;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: #fff;
+  cursor: pointer;
+}
+
+button:not([class*="btn"]):hover:not(:disabled) {
+  background: var(--bg-subtle);
+}
+
+.split-button {
+  display: inline-flex;
+}
+
+.split-button .btn {
+  border-radius: 0;
+}
+
+.split-button .btn:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.split-button .btn:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-left: none;
+}
+
+/* --- Tabs --- */
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding-bottom: 0.75rem;
+}
+
+.tabs a {
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px 6px 0 0;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.tabs a:hover {
+  background: var(--bg-subtle);
+}
+
+.tabs a.active {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  font-weight: 600;
+}
+
+/* --- Editor / file tree layout --- */
+
+.editor-layout {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.file-pane {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+.source-pane {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.4rem;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.tree-row-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-row:hover {
+  background: var(--bg-subtle);
+}
+
+.tree-row.selected {
+  background: var(--accent-soft);
+}
+
+.tree-row-icon-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 1;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.1s ease, background-color 0.1s ease;
+}
+
+.tree-row:hover .tree-row-icon-btn,
+.tree-row.selected .tree-row-icon-btn {
+  opacity: 1;
+}
+
+.tree-row-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #1a1d21;
+}
+
+.tree-row-icon-btn-danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.create-file-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.create-file-btn span {
+  font-weight: 700;
+}
+
+.tree-rename-input {
+  flex: 1;
+  font-size: 0.9rem;
+  padding: 0.05rem 0.3rem;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  font-family: inherit;
+}
+
+/* --- Uploads --- */
+
+.upload-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.dropzone {
+  flex: 1;
+  min-width: 260px;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+  background: var(--bg-subtle);
+  transition: border-color 0.12s ease, background-color 0.12s ease;
+}
+
+.dropzone.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.dropzone-label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.dropzone-hint {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 0.6rem;
+}
+
+.upload-control {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+/* --- Authoring test form --- */
+
+.test-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding: 0.85rem;
+  background: var(--bg-subtle);
+  border-radius: 6px;
+}
+
+.test-form input[type="text"],
+.test-form input:not([type]),
+.test-form textarea {
+  font-family: inherit;
+}
+
+.test-form textarea {
+  min-height: 2.2rem;
+  width: 160px;
+}
+
+.expected-output-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: flex-start;
+}
