@@ -195,3 +195,4 @@ follow-up planning step once you confirm this direction.
   already hit once in this project.
 - **Router vs no router** — deferred until it's clear whether the three
   views need bookmarkable URLs.
+
