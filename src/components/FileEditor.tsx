@@ -3,6 +3,8 @@ import Editor from "@monaco-editor/react";
 import type { editor as MonacoEditorNs } from "monaco-editor";
 import { FileTree } from "./FileTree";
 import { findScrollableAncestor } from "../scroll-chain";
+import { filesToZip } from "../zip";
+import { downloadBytes } from "../upload";
 
 type Props = {
   files: Record<string, string>;
@@ -14,6 +16,8 @@ type Props = {
    * Only meaningful (and required) when editable. */
   newFileTemplate?: string;
   height?: number;
+  /** Filename for the "Download as .zip" button. */
+  zipFileName?: string;
 };
 
 function uniqueName(base: string, files: Record<string, string>): string {
@@ -34,7 +38,15 @@ function uniqueName(base: string, files: Record<string, string>): string {
  * no file-management controls) and "editor" (new/rename/delete file, and
  * an editable Monaco instance).
  */
-export function FileEditor({ files, onChange, languageId, editable, newFileTemplate, height = 480 }: Props) {
+export function FileEditor({
+  files,
+  onChange,
+  languageId,
+  editable,
+  newFileTemplate,
+  height = 480,
+  zipFileName = "files.zip",
+}: Props) {
   const [selected, setSelected] = useState(Object.keys(files)[0] ?? "");
   const [renameRequestId, setRenameRequestId] = useState<string | undefined>();
   const editorRef = useRef<MonacoEditorNs.IStandaloneCodeEditor | null>(null);
@@ -102,6 +114,10 @@ export function FileEditor({ files, onChange, languageId, editable, newFileTempl
     onChange(next);
   }
 
+  function downloadZip() {
+    downloadBytes(filesToZip(files), zipFileName);
+  }
+
   return (
     <div className="editor-layout">
       <div className="file-pane">
@@ -120,6 +136,14 @@ export function FileEditor({ files, onChange, languageId, editable, newFileTempl
             <span aria-hidden="true">+</span> Create file
           </button>
         )}
+        <button
+          type="button"
+          className="btn btn-secondary download-zip-btn"
+          onClick={downloadZip}
+          disabled={Object.keys(files).length === 0}
+        >
+          <span aria-hidden="true">⭳</span> Download as .zip
+        </button>
       </div>
       <div className="source-pane" ref={sourcePaneRef}>
         <Editor

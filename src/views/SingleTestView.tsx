@@ -1,24 +1,29 @@
 import { useMemo, useState } from "react";
-import { primePackage, correctSolution, buggySolution } from "../grading/sample-package";
+import { SAMPLE_PACKAGES, SAMPLE_SOLUTIONS } from "../grading/sample-package";
 import { exportStudentPackage } from "../grading/export-student-package";
 import { gradeSubmission } from "../grading/run-grading";
 import { packageToZip, zipToPackage } from "../grading/package-zip";
-import { getLanguageRunner } from "../languages/registry";
+import { getLanguageRunner, LANGUAGE_RUNNERS } from "../languages/registry";
 import type { GradeResult } from "../grading/types";
 import { FileEditor } from "../components/FileEditor";
 import { ZipDropUpload } from "../components/ZipDropUpload";
 import { FilesDropUpload } from "../components/FilesDropUpload";
 import { downloadBytes } from "../upload";
 import type { GradingPackage } from "../grading/types";
+import type { LanguageId } from "../languages/types";
 
-const DEFAULT_PACKAGE: GradingPackage = exportStudentPackage(primePackage);
-const DEFAULT_SUBMISSION: Record<string, string> = { "main.c": correctSolution };
+const DEFAULT_LANGUAGE: LanguageId = "c";
+const DEFAULT_PACKAGE: GradingPackage = exportStudentPackage(SAMPLE_PACKAGES[DEFAULT_LANGUAGE]);
+const DEFAULT_SUBMISSION: Record<string, string> = {
+  [SAMPLE_SOLUTIONS[DEFAULT_LANGUAGE].fileName]: SAMPLE_SOLUTIONS[DEFAULT_LANGUAGE].correct,
+};
 
 export function SingleTestView() {
   const [pkg, setPkg] = useState<GradingPackage>(DEFAULT_PACKAGE);
   const [submissionFiles, setSubmissionFiles] = useState<Record<string, string>>(DEFAULT_SUBMISSION);
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<GradeResult | null>(null);
+  const [sampleLanguage, setSampleLanguage] = useState<LanguageId>(DEFAULT_LANGUAGE);
 
   const runner = getLanguageRunner(pkg.manifest.language);
   const allFiles = { ...pkg.files, ...submissionFiles };
@@ -27,8 +32,10 @@ export function SingleTestView() {
   const entryPoint = useMemo(() => runner.detectEntryPoint(allFiles), [runner, allFiles]);
 
   function loadSample(preset: "correct" | "buggy", visibility: "student" | "instructor") {
-    setPkg(visibility === "student" ? exportStudentPackage(primePackage) : primePackage);
-    setSubmissionFiles({ "main.c": preset === "buggy" ? buggySolution : correctSolution });
+    const samplePackage = SAMPLE_PACKAGES[sampleLanguage];
+    const solution = SAMPLE_SOLUTIONS[sampleLanguage];
+    setPkg(visibility === "student" ? exportStudentPackage(samplePackage) : samplePackage);
+    setSubmissionFiles({ [solution.fileName]: preset === "buggy" ? solution.buggy : solution.correct });
     setResult(null);
   }
 
@@ -59,9 +66,9 @@ export function SingleTestView() {
   return (
     <div>
       <p className="desc">
-        Compiles and runs arbitrary {runner.displayName} entirely client-side (Web Worker, no server
-        involved) and grades it purely by I/O: the manifest feeds each test's stdin to the compiled program
-        and compares its stdout against expected text.
+        Runs arbitrary {runner.displayName} code entirely client-side (Web Worker, no server involved) and
+        grades it purely by I/O: the manifest feeds each test's stdin to the program and compares its
+        stdout against expected text.
       </p>
 
       <section>
@@ -76,7 +83,14 @@ export function SingleTestView() {
           </button>
         </div>
         <div className="controls">
-          <span className="desc">Or try the bundled sample assignment:</span>
+          <span className="desc">Or try the bundled sample assignment in:</span>
+          <select value={sampleLanguage} onChange={(e) => setSampleLanguage(e.target.value as LanguageId)}>
+            {Object.values(LANGUAGE_RUNNERS).map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.displayName}
+              </option>
+            ))}
+          </select>
           <button className="btn btn-secondary btn-small" onClick={() => loadSample("correct", "student")}>
             Correct (student view)
           </button>
@@ -96,19 +110,26 @@ export function SingleTestView() {
         )}
         {!collision && entryPoint.status === "not_found" && (
           <p className="status-error">
-            No {runner.displayName} entry point (`main`) found in the submission or package files.
+            No {runner.displayName} entry point found in the submission or package files.
           </p>
         )}
         {!collision && entryPoint.status === "multiple" && (
           <p className="status-error">
-            Multiple files define `main`: {entryPoint.files.join(", ")} — a submission can only have one.
+            Multiple files could serve as the entry point: {entryPoint.files.join(", ")} — a submission can
+            only have one.
           </p>
         )}
 
         {Object.keys(pkg.files).length > 0 && (
           <>
             <h3>Package files (read-only)</h3>
-            <FileEditor files={pkg.files} languageId={runner.monacoLanguageId} editable={false} height={240} />
+            <FileEditor
+              files={pkg.files}
+              languageId={runner.monacoLanguageId}
+              editable={false}
+              height={240}
+              zipFileName="package-files.zip"
+            />
           </>
         )}
 
@@ -119,6 +140,7 @@ export function SingleTestView() {
           languageId={runner.monacoLanguageId}
           editable
           newFileTemplate={`untitled${runner.fileExtensions[0]}`}
+          zipFileName="submission.zip"
         />
 
         <p>

@@ -133,6 +133,7 @@ export function BulkView() {
             languageId={runner.monacoLanguageId}
             editable={false}
             height={420}
+            zipFileName={`${detail.label}.zip`}
           />
           {detail.result.compileOutput && <pre>{detail.result.compileOutput}</pre>}
           <table>

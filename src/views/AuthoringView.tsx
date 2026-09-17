@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FileEditor } from "../components/FileEditor";
-import { TestCaseForm } from "../components/TestCaseForm";
+import { TestCaseTable } from "../components/TestCaseTable";
 import { FilesDropUpload } from "../components/FilesDropUpload";
 import { gradeSubmission } from "../grading/run-grading";
 import { exportStudentPackage } from "../grading/export-student-package";
@@ -40,13 +40,8 @@ export function AuthoringView() {
     setResult(null);
   }
 
-  function addTest(test: TestCase) {
-    setTests((prev) => [...prev, test]);
-    setResult(null);
-  }
-
-  function removeTest(id: string) {
-    setTests((prev) => prev.filter((t) => t.id !== id));
+  function updateTests(next: TestCase[]) {
+    setTests(next);
     setResult(null);
   }
 
@@ -135,6 +130,7 @@ export function AuthoringView() {
           languageId={runner.monacoLanguageId}
           editable
           newFileTemplate={`untitled${runner.fileExtensions[0]}`}
+          zipFileName="reference-implementation.zip"
         />
         <div className="controls">
           <button className="btn btn-secondary" onClick={checkReference} disabled={checking || tests.length === 0}>
@@ -200,7 +196,9 @@ export function AuthoringView() {
         <h2>Package files (optional)</h2>
         <p className="desc">
           Files compiled and linked alongside every submission (shared headers, a fixed test driver, etc).
-          Leave empty for assignments where the student's own file is the whole program.
+          Leave empty for assignments where the student's own file is the whole program. Unlike hidden
+          tests, package files ship in the student package too — only test visibility gets filtered on
+          export, so anything placed here is visible to students.
         </p>
         <FileEditor
           files={packageFiles}
@@ -208,6 +206,7 @@ export function AuthoringView() {
           languageId={runner.monacoLanguageId}
           editable
           newFileTemplate={`untitled${runner.fileExtensions[0]}`}
+          zipFileName="package-files.zip"
         />
       </section>
 
@@ -215,43 +214,7 @@ export function AuthoringView() {
         <h2>
           Tests ({tests.length}, {pointsPossible} point{pointsPossible === 1 ? "" : "s"} total)
         </h2>
-        <TestCaseForm onAdd={addTest} onRunReference={runReferenceForStdin} />
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Stdin</th>
-              <th>Expected</th>
-              <th>Comparison</th>
-              <th>Visibility</th>
-              <th>Points</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {tests.map((t) => (
-              <tr key={t.id}>
-                <td>{t.name}</td>
-                <td>
-                  <pre>{t.stdin}</pre>
-                </td>
-                <td>
-                  <pre>{t.expectedOutput}</pre>
-                </td>
-                <td>{t.comparison}</td>
-                <td>
-                  <span className={`badge ${t.visibility}`}>{t.visibility}</span>
-                </td>
-                <td>{t.points}</td>
-                <td>
-                  <button className="btn btn-danger btn-small" onClick={() => removeTest(t.id)}>
-                    remove
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TestCaseTable tests={tests} onChange={updateTests} onRunReference={runReferenceForStdin} />
       </section>
 
       <section>

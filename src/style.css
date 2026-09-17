@@ -349,7 +349,8 @@ button:not([class*="btn"]):hover:not(:disabled) {
   color: var(--danger);
 }
 
-.create-file-btn {
+.create-file-btn,
+.download-zip-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -414,28 +415,23 @@ button:not([class*="btn"]):hover:not(:disabled) {
   font-size: 0.9rem;
 }
 
-/* --- Authoring test form --- */
+/* --- Authoring test table --- */
 
-.test-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  align-items: flex-start;
-  margin-bottom: 1rem;
-  padding: 0.85rem;
-  background: var(--bg-subtle);
-  border-radius: 6px;
-}
-
-.test-form input[type="text"],
-.test-form input:not([type]),
-.test-form textarea {
+.test-table textarea {
   font-family: inherit;
-}
-
-.test-form textarea {
   min-height: 2.2rem;
   width: 160px;
+  resize: vertical;
+}
+
+.test-table input[type="text"],
+.test-table input:not([type]) {
+  font-family: inherit;
+  width: 140px;
+}
+
+.test-number-input {
+  width: 4.5rem;
 }
 
 .expected-output-field {
@@ -443,4 +439,23 @@ button:not([class*="btn"]):hover:not(:disabled) {
   flex-direction: column;
   gap: 0.3rem;
   align-items: flex-start;
+}
+
+.test-drag-handle {
+  cursor: grab;
+  color: var(--text-muted);
+  text-align: center;
+  user-select: none;
+}
+
+.test-table tbody tr.test-row-dragging {
+  opacity: 0.4;
+}
+
+.test-table tbody tr.test-row-drag-over {
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+
+.test-table tfoot td {
+  padding-top: 0.6rem;
 }
