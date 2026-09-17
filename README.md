@@ -36,3 +36,6 @@ Actions workflow (`.github/workflows/deploy.yml`) builds and deploys to
 GitHub Pages automatically on push to `main`; see that file for the one
 manual step (enabling Pages in the repo's Settings → Pages → Source →
 GitHub Actions).
+
+## AI Note
+This project was developed with significant help from AI
